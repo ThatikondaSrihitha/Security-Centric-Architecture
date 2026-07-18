@@ -1,0 +1,199 @@
+{
+  "name": "IoT Monitoring System",
+  "description": "Industrial IoT platform for real-time device monitoring, telemetry collection, and remote management.",
+  "components": [
+    {
+      "id": "iot-device",
+      "name": "IoT Sensor Device",
+      "type": "external",
+      "description": "Physical IoT sensor collecting telemetry data",
+      "zone": "field",
+      "internet_facing": true,
+      "data_sensitivity": "medium",
+      "authentication": false,
+      "authorization": false,
+      "encryption_at_rest": false,
+      "logging_enabled": false,
+      "rate_limiting": false,
+      "input_validation": false
+    },
+    {
+      "id": "iot-gateway",
+      "name": "IoT Gateway",
+      "type": "service",
+      "description": "Edge gateway aggregating device data",
+      "zone": "edge",
+      "internet_facing": true,
+      "data_sensitivity": "medium",
+      "authentication": false,
+      "authorization": false,
+      "encryption_at_rest": false,
+      "logging_enabled": false,
+      "rate_limiting": false,
+      "input_validation": false
+    },
+    {
+      "id": "iot-broker",
+      "name": "MQTT Broker",
+      "type": "queue",
+      "description": "Message broker for IoT telemetry streams",
+      "zone": "cloud",
+      "internet_facing": true,
+      "data_sensitivity": "medium",
+      "authentication": false,
+      "authorization": false,
+      "encryption_at_rest": false,
+      "logging_enabled": false,
+      "rate_limiting": false,
+      "input_validation": false
+    },
+    {
+      "id": "iot-processing",
+      "name": "Data Processing Service",
+      "type": "service",
+      "description": "Real-time telemetry processing and analytics",
+      "zone": "cloud",
+      "internet_facing": false,
+      "data_sensitivity": "high",
+      "authentication": true,
+      "authorization": false,
+      "encryption_at_rest": false,
+      "logging_enabled": true,
+      "rate_limiting": false,
+      "input_validation": false
+    },
+    {
+      "id": "iot-tsdb",
+      "name": "Time Series Database",
+      "type": "database",
+      "description": "Stores historical telemetry data",
+      "zone": "data",
+      "internet_facing": false,
+      "data_sensitivity": "high",
+      "authentication": true,
+      "authorization": false,
+      "encryption_at_rest": false,
+      "logging_enabled": false,
+      "rate_limiting": false,
+      "input_validation": false
+    },
+    {
+      "id": "iot-dashboard",
+      "name": "Monitoring Dashboard",
+      "type": "service",
+      "description": "Web-based monitoring and alerting dashboard",
+      "zone": "cloud",
+      "internet_facing": true,
+      "data_sensitivity": "medium",
+      "authentication": true,
+      "authorization": false,
+      "encryption_at_rest": false,
+      "logging_enabled": true,
+      "rate_limiting": false,
+      "input_validation": false
+    },
+    {
+      "id": "iot-remote",
+      "name": "Remote Management API",
+      "type": "api",
+      "description": "API for remote device configuration and control",
+      "zone": "cloud",
+      "internet_facing": true,
+      "data_sensitivity": "high",
+      "authentication": false,
+      "authorization": false,
+      "encryption_at_rest": false,
+      "logging_enabled": false,
+      "rate_limiting": false,
+      "input_validation": false
+    }
+  ],
+  "data_flows": [
+    {
+      "id": "iot-df-001",
+      "source": "IoT Sensor Device",
+      "destination": "IoT Gateway",
+      "protocol": "MQTT",
+      "data": "Sensor telemetry: temperature, pressure, status",
+      "encrypted": false,
+      "authenticated": false,
+      "crosses_trust_boundary": true,
+      "bidirectional": false
+    },
+    {
+      "id": "iot-df-002",
+      "source": "IoT Gateway",
+      "destination": "MQTT Broker",
+      "protocol": "MQTT",
+      "data": "Aggregated telemetry data",
+      "encrypted": false,
+      "authenticated": false,
+      "crosses_trust_boundary": true,
+      "bidirectional": false
+    },
+    {
+      "id": "iot-df-003",
+      "source": "MQTT Broker",
+      "destination": "Data Processing Service",
+      "protocol": "AMQP",
+      "data": "Raw telemetry events",
+      "encrypted": false,
+      "authenticated": false,
+      "crosses_trust_boundary": false,
+      "bidirectional": false
+    },
+    {
+      "id": "iot-df-004",
+      "source": "Data Processing Service",
+      "destination": "Time Series Database",
+      "protocol": "SQL",
+      "data": "Processed telemetry records",
+      "encrypted": false,
+      "authenticated": true,
+      "crosses_trust_boundary": true,
+      "bidirectional": true
+    },
+    {
+      "id": "iot-df-005",
+      "source": "Monitoring Dashboard",
+      "destination": "Time Series Database",
+      "protocol": "HTTP",
+      "data": "Historical data queries for visualisation",
+      "encrypted": false,
+      "authenticated": true,
+      "crosses_trust_boundary": false,
+      "bidirectional": true
+    },
+    {
+      "id": "iot-df-006",
+      "source": "Remote Management API",
+      "destination": "IoT Gateway",
+      "protocol": "HTTP",
+      "data": "Device configuration commands",
+      "encrypted": false,
+      "authenticated": false,
+      "crosses_trust_boundary": true,
+      "bidirectional": true
+    }
+  ],
+  "trust_boundaries": [
+    {
+      "id": "iot-tb-001",
+      "name": "Field / Cloud Boundary",
+      "zone_from": "field",
+      "zone_to": "cloud",
+      "description": "Physical devices to cloud infrastructure"
+    },
+    {
+      "id": "iot-tb-002",
+      "name": "Cloud / Data Boundary",
+      "zone_from": "cloud",
+      "zone_to": "data",
+      "description": "Cloud services to data storage"
+    }
+  ],
+  "metadata": {
+    "source_file": "sample_iot.json",
+    "version": "1.0"
+  }
+}

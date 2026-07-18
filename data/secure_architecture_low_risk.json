@@ -1,0 +1,233 @@
+{
+  "name": "Secure Banking Application",
+  "description": "A highly secure banking application with all security controls properly implemented. Demonstrates low risk architecture.",
+  "components": [
+    {
+      "id": "c-001",
+      "name": "Customer Portal",
+      "type": "service",
+      "description": "Web portal for banking customers — fully secured",
+      "zone": "dmz",
+      "internet_facing": true,
+      "data_sensitivity": "medium",
+      "authentication": true,
+      "authorization": true,
+      "encryption_at_rest": true,
+      "logging_enabled": true,
+      "rate_limiting": true,
+      "input_validation": true
+    },
+    {
+      "id": "c-002",
+      "name": "API Gateway",
+      "type": "api",
+      "description": "Secure API gateway with WAF and rate limiting",
+      "zone": "dmz",
+      "internet_facing": true,
+      "data_sensitivity": "low",
+      "authentication": true,
+      "authorization": true,
+      "encryption_at_rest": true,
+      "logging_enabled": true,
+      "rate_limiting": true,
+      "input_validation": true
+    },
+    {
+      "id": "c-003",
+      "name": "Auth Service",
+      "type": "service",
+      "description": "OAuth2 + MFA authentication service",
+      "zone": "internal",
+      "internet_facing": false,
+      "data_sensitivity": "high",
+      "authentication": true,
+      "authorization": true,
+      "encryption_at_rest": true,
+      "logging_enabled": true,
+      "rate_limiting": true,
+      "input_validation": true
+    },
+    {
+      "id": "c-004",
+      "name": "Account Service",
+      "type": "service",
+      "description": "Core banking account management service",
+      "zone": "internal",
+      "internet_facing": false,
+      "data_sensitivity": "high",
+      "authentication": true,
+      "authorization": true,
+      "encryption_at_rest": true,
+      "logging_enabled": true,
+      "rate_limiting": true,
+      "input_validation": true
+    },
+    {
+      "id": "c-005",
+      "name": "Transaction Service",
+      "type": "service",
+      "description": "Handles all financial transactions securely",
+      "zone": "internal",
+      "internet_facing": false,
+      "data_sensitivity": "high",
+      "authentication": true,
+      "authorization": true,
+      "encryption_at_rest": true,
+      "logging_enabled": true,
+      "rate_limiting": true,
+      "input_validation": true
+    },
+    {
+      "id": "c-005b",
+      "name": "Notification Service",
+      "type": "service",
+      "description": "Sends alerts and notifications — lower security tier",
+      "zone": "internal",
+      "internet_facing": false,
+      "data_sensitivity": "low",
+      "authentication": true,
+      "authorization": true,
+      "encryption_at_rest": false,
+      "logging_enabled": true,
+      "rate_limiting": false,
+      "input_validation": true
+    },
+    {
+      "id": "c-006",
+      "name": "Accounts Database",
+      "type": "database",
+      "description": "Encrypted database storing account information",
+      "zone": "data",
+      "internet_facing": false,
+      "data_sensitivity": "critical",
+      "authentication": true,
+      "authorization": true,
+      "encryption_at_rest": true,
+      "logging_enabled": true,
+      "rate_limiting": false,
+      "input_validation": true
+    },
+    {
+      "id": "c-007",
+      "name": "Audit Log Store",
+      "type": "database",
+      "description": "Tamper-proof audit logging database",
+      "zone": "data",
+      "internet_facing": false,
+      "data_sensitivity": "medium",
+      "authentication": true,
+      "authorization": true,
+      "encryption_at_rest": true,
+      "logging_enabled": true,
+      "rate_limiting": false,
+      "input_validation": true
+    }
+  ],
+  "data_flows": [
+    {
+      "id": "df-001",
+      "source": "Customer Portal",
+      "destination": "API Gateway",
+      "protocol": "HTTPS",
+      "data": "Authenticated user requests",
+      "encrypted": true,
+      "authenticated": true,
+      "crosses_trust_boundary": false,
+      "bidirectional": true
+    },
+    {
+      "id": "df-002",
+      "source": "API Gateway",
+      "destination": "Auth Service",
+      "protocol": "HTTPS",
+      "data": "Token validation requests",
+      "encrypted": true,
+      "authenticated": true,
+      "crosses_trust_boundary": true,
+      "bidirectional": true
+    },
+    {
+      "id": "df-003",
+      "source": "API Gateway",
+      "destination": "Account Service",
+      "protocol": "HTTPS",
+      "data": "Account queries",
+      "encrypted": true,
+      "authenticated": true,
+      "crosses_trust_boundary": true,
+      "bidirectional": true
+    },
+    {
+      "id": "df-004",
+      "source": "API Gateway",
+      "destination": "Transaction Service",
+      "protocol": "HTTPS",
+      "data": "Transaction requests",
+      "encrypted": true,
+      "authenticated": true,
+      "crosses_trust_boundary": true,
+      "bidirectional": true
+    },
+    {
+      "id": "df-005",
+      "source": "Account Service",
+      "destination": "Accounts Database",
+      "protocol": "SQL",
+      "data": "Encrypted account data",
+      "encrypted": true,
+      "authenticated": true,
+      "crosses_trust_boundary": true,
+      "bidirectional": true
+    },
+    {
+      "id": "df-006",
+      "source": "Transaction Service",
+      "destination": "Audit Log Store",
+      "protocol": "HTTPS",
+      "data": "Transaction audit events",
+      "encrypted": true,
+      "authenticated": true,
+      "crosses_trust_boundary": true,
+      "bidirectional": false
+    },
+    {
+      "id": "df-007",
+      "source": "Notification Service",
+      "destination": "Customer Portal",
+      "protocol": "HTTPS",
+      "data": "Notification messages",
+      "encrypted": true,
+      "authenticated": false,
+      "crosses_trust_boundary": false,
+      "bidirectional": false
+    }
+  ],
+  "trust_boundaries": [
+    {
+      "id": "tb-001",
+      "name": "Internet / DMZ Boundary",
+      "zone_from": "external",
+      "zone_to": "dmz",
+      "description": "Public internet to DMZ — protected by WAF and DDoS mitigation"
+    },
+    {
+      "id": "tb-002",
+      "name": "DMZ / Internal Boundary",
+      "zone_from": "dmz",
+      "zone_to": "internal",
+      "description": "DMZ to internal services — mutual TLS enforced"
+    },
+    {
+      "id": "tb-003",
+      "name": "Internal / Data Boundary",
+      "zone_from": "internal",
+      "zone_to": "data",
+      "description": "Internal services to data tier — encrypted and strictly authorized"
+    }
+  ],
+  "metadata": {
+    "source_file": "secure_architecture_low_risk.json",
+    "version": "1.0",
+    "security_level": "HIGH — all controls enabled"
+  }
+}

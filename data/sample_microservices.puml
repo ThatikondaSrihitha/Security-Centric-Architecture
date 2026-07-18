@@ -1,0 +1,34 @@
+@startuml
+title Microservices Application Architecture
+
+actor "End User" as User
+actor "Admin User" as Admin
+cloud "CDN" as CDN
+component "API Gateway" as APIGateway
+component "Auth Service" as AuthService
+component "User Service" as UserService
+component "Product Service" as ProductService
+component "Order Service" as OrderService
+component "Notification Service" as NotifService
+database "User DB" as UserDB
+database "Product DB" as ProductDB
+database "Order DB" as OrderDB
+queue "Message Queue" as MsgQueue
+
+User -> CDN : HTTPS static assets
+User -> APIGateway : HTTPS REST API
+Admin -> APIGateway : HTTPS admin API
+CDN -> APIGateway : HTTP origin requests
+APIGateway -> AuthService : HTTP token validation
+APIGateway -> UserService : HTTP user operations
+APIGateway -> ProductService : HTTP product queries
+APIGateway -> OrderService : HTTP order management
+AuthService -> UserDB : SQL credential lookup
+UserService -> UserDB : SQL user data
+ProductService -> ProductDB : SQL product data
+OrderService -> OrderDB : SQL order data
+OrderService -> MsgQueue : AMQP order events
+MsgQueue -> NotifService : AMQP notifications
+NotifService -> User : SMTP email
+
+@enduml

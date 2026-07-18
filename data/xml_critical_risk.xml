@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<architecture name="Vulnerable Banking System" id="arch-bank-001"
+  description="A critically insecure banking system. Almost every security control is missing across all components and flows. Maximum threat exposure.">
+
+  <components>
+    <component id="c-001" name="Customer Banking Portal"
+      type="service" zone="external"
+      internet_facing="true" data_sensitivity="critical"
+      authentication="false" authorization="false"
+      encryption_at_rest="false" logging_enabled="false"
+      rate_limiting="false" input_validation="false"
+      description="Internet banking — completely unsecured"/>
+
+    <component id="c-002" name="Mobile Banking App"
+      type="service" zone="external"
+      internet_facing="true" data_sensitivity="critical"
+      authentication="false" authorization="false"
+      encryption_at_rest="false" logging_enabled="false"
+      rate_limiting="false" input_validation="false"
+      description="Mobile app — no security controls"/>
+
+    <component id="c-003" name="Admin Banking Console"
+      type="service" zone="external"
+      internet_facing="true" data_sensitivity="critical"
+      authentication="false" authorization="false"
+      encryption_at_rest="false" logging_enabled="false"
+      rate_limiting="false" input_validation="false"
+      description="Admin console — internet-facing, no auth at all"/>
+
+    <component id="c-004" name="Core Banking API"
+      type="api" zone="internal"
+      internet_facing="true" data_sensitivity="critical"
+      authentication="false" authorization="false"
+      encryption_at_rest="false" logging_enabled="false"
+      rate_limiting="false" input_validation="false"
+      description="Core API — internet-facing, no security"/>
+
+    <component id="c-005" name="Transaction Service"
+      type="service" zone="internal"
+      internet_facing="false" data_sensitivity="critical"
+      authentication="false" authorization="false"
+      encryption_at_rest="false" logging_enabled="false"
+      rate_limiting="false" input_validation="false"
+      description="Fund transfers — critical data, zero controls"/>
+
+    <component id="c-006" name="Account Service"
+      type="service" zone="internal"
+      internet_facing="false" data_sensitivity="critical"
+      authentication="false" authorization="false"
+      encryption_at_rest="false" logging_enabled="false"
+      rate_limiting="false" input_validation="false"
+      description="Account management — no authorization"/>
+
+    <component id="c-007" name="Loan Service"
+      type="service" zone="internal"
+      internet_facing="false" data_sensitivity="critical"
+      authentication="false" authorization="false"
+      encryption_at_rest="false" logging_enabled="false"
+      rate_limiting="false" input_validation="false"
+      description="Loan processing — sensitive financial data, no security"/>
+
+    <component id="c-008" name="Customer Accounts DB"
+      type="database" zone="internal"
+      internet_facing="true" data_sensitivity="critical"
+      authentication="false" authorization="false"
+      encryption_at_rest="false" logging_enabled="false"
+      rate_limiting="false" input_validation="false"
+      description="Account DB — EXPOSED TO INTERNET — catastrophic risk"/>
+
+    <component id="c-009" name="Transaction Database"
+      type="database" zone="internal"
+      internet_facing="true" data_sensitivity="critical"
+      authentication="false" authorization="false"
+      encryption_at_rest="false" logging_enabled="false"
+      rate_limiting="false" input_validation="false"
+      description="Transaction history — internet-facing, no encryption"/>
+
+    <component id="c-010" name="External Payment Network"
+      type="external" zone="external"
+      internet_facing="true" data_sensitivity="critical"
+      authentication="false" authorization="false"
+      encryption_at_rest="false" logging_enabled="false"
+      rate_limiting="false" input_validation="false"
+      description="SWIFT/RTGS connection — no identity verification"/>
+
+    <component id="c-011" name="KYC Service"
+      type="service" zone="internal"
+      internet_facing="false" data_sensitivity="critical"
+      authentication="false" authorization="false"
+      encryption_at_rest="false" logging_enabled="false"
+      rate_limiting="false" input_validation="false"
+      description="KYC identity verification — PII stored unsecured"/>
+  </components>
+
+  <data_flows>
+    <flow id="df-001"
+      source="Customer Banking Portal" destination="Core Banking API"
+      protocol="HTTP"
+      data="sensitive banking credentials password personal account"
+      encrypted="false" authenticated="false"
+      crosses_trust_boundary="true" bidirectional="true"/>
+
+    <flow id="df-002"
+      source="Mobile Banking App" destination="Core Banking API"
+      protocol="HTTP"
+      data="sensitive mobile banking personal credentials token"
+      encrypted="false" authenticated="false"
+      crosses_trust_boundary="true" bidirectional="true"/>
+
+    <flow id="df-003"
+      source="Admin Banking Console" destination="Customer Accounts DB"
+      protocol="HTTP"
+      data="sensitive admin credentials all customer accounts personal"
+      encrypted="false" authenticated="false"
+      crosses_trust_boundary="true" bidirectional="true"/>
+
+    <flow id="df-004"
+      source="Core Banking API" destination="Transaction Service"
+      protocol="HTTP"
+      data="payment credit card sensitive financial transaction"
+      encrypted="false" authenticated="false"
+      crosses_trust_boundary="false" bidirectional="true"/>
+
+    <flow id="df-005"
+      source="Transaction Service" destination="Transaction Database"
+      protocol="HTTP"
+      data="sensitive financial transaction records credit card payment"
+      encrypted="false" authenticated="false"
+      crosses_trust_boundary="false" bidirectional="true"/>
+
+    <flow id="df-006"
+      source="Transaction Service" destination="External Payment Network"
+      protocol="HTTP"
+      data="sensitive payment transfer personal financial credit"
+      encrypted="false" authenticated="false"
+      crosses_trust_boundary="true" bidirectional="true"/>
+
+    <flow id="df-007"
+      source="Account Service" destination="Customer Accounts DB"
+      protocol="HTTP"
+      data="sensitive account balance personal financial data"
+      encrypted="false" authenticated="false"
+      crosses_trust_boundary="false" bidirectional="true"/>
+
+    <flow id="df-008"
+      source="Loan Service" destination="KYC Service"
+      protocol="HTTP"
+      data="sensitive personal KYC identity documents financial"
+      encrypted="false" authenticated="false"
+      crosses_trust_boundary="false" bidirectional="true"/>
+
+    <flow id="df-009"
+      source="Admin Banking Console" destination="Transaction Database"
+      protocol="HTTP"
+      data="sensitive all transaction history financial records"
+      encrypted="false" authenticated="false"
+      crosses_trust_boundary="true" bidirectional="true"/>
+
+    <flow id="df-010"
+      source="KYC Service" destination="Customer Accounts DB"
+      protocol="HTTP"
+      data="sensitive personal identity verification data"
+      encrypted="false" authenticated="false"
+      crosses_trust_boundary="false" bidirectional="true"/>
+  </data_flows>
+
+  <trust_boundaries>
+    <boundary id="tb-001" name="Internet / Core Boundary"
+      zone_from="external" zone_to="internal"
+      description="No perimeter protection — internet directly reaches core banking"/>
+    <boundary id="tb-002" name="External Network Boundary"
+      zone_from="external" zone_to="internal"
+      description="SWIFT connection — no identity verification or encryption"/>
+  </trust_boundaries>
+
+</architecture>

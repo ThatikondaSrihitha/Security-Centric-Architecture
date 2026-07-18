@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+*.egg
+.eggs/
+
+# Virtual environments
+venv/
+env/
+.env/
+.venv/
+
+# Application data
+database/*.db
+logs/*.log
+generated_reports/*
+!database/.gitkeep
+!logs/.gitkeep
+!generated_reports/.gitkeep
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Streamlit
+.streamlit/secrets.toml
+
+# Test cache
+.pytest_cache/
+.coverage
+htmlcov/

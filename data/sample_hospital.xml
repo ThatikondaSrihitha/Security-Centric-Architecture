@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<architecture name="Hospital Management System"
+              description="Electronic health records and hospital operations platform with HIPAA compliance requirements.">
+
+  <components>
+    <component id="hms-doctor" name="Doctor" type="user"
+               description="Medical staff accessing patient records"
+               zone="internal" internet_facing="false"
+               data_sensitivity="high"
+               authentication="true" authorization="true"
+               encryption_at_rest="false" logging_enabled="true"
+               rate_limiting="false" input_validation="true"/>
+
+    <component id="hms-patient" name="Patient Portal" type="user"
+               description="Patients accessing their own health records"
+               zone="external" internet_facing="true"
+               data_sensitivity="high"
+               authentication="false" authorization="false"
+               encryption_at_rest="false" logging_enabled="false"
+               rate_limiting="false" input_validation="false"/>
+
+    <component id="hms-ehr" name="EHR System" type="service"
+               description="Electronic Health Records management system"
+               zone="internal" internet_facing="false"
+               data_sensitivity="critical"
+               authentication="true" authorization="false"
+               encryption_at_rest="false" logging_enabled="true"
+               rate_limiting="false" input_validation="true"/>
+
+    <component id="hms-lab" name="Laboratory System" type="service"
+               description="Manages lab test orders and results"
+               zone="internal" internet_facing="false"
+               data_sensitivity="high"
+               authentication="true" authorization="true"
+               encryption_at_rest="false" logging_enabled="false"
+               rate_limiting="false" input_validation="true"/>
+
+    <component id="hms-patientdb" name="Patient Database" type="database"
+               description="Stores patient records, medical history, PII"
+               zone="data" internet_facing="false"
+               data_sensitivity="critical"
+               authentication="true" authorization="false"
+               encryption_at_rest="false" logging_enabled="false"
+               rate_limiting="false" input_validation="false"/>
+
+    <component id="hms-billing" name="Billing System" type="service"
+               description="Handles patient billing and insurance claims"
+               zone="internal" internet_facing="false"
+               data_sensitivity="critical"
+               authentication="true" authorization="false"
+               encryption_at_rest="false" logging_enabled="false"
+               rate_limiting="false" input_validation="false"/>
+
+    <component id="hms-insurer" name="Insurance Gateway" type="external"
+               description="External insurance provider integration"
+               zone="external" internet_facing="true"
+               data_sensitivity="critical"
+               authentication="false" authorization="false"
+               encryption_at_rest="false" logging_enabled="false"
+               rate_limiting="false" input_validation="false"/>
+  </components>
+
+  <data_flows>
+    <flow id="hms-df-001" source="Patient Portal" destination="EHR System"
+          protocol="HTTPS" data="Patient health record requests"
+          encrypted="true" authenticated="false"
+          crosses_trust_boundary="true" bidirectional="true"/>
+
+    <flow id="hms-df-002" source="Doctor" destination="EHR System"
+          protocol="HTTP" data="Patient record access, prescriptions"
+          encrypted="false" authenticated="true"
+          crosses_trust_boundary="false" bidirectional="true"/>
+
+    <flow id="hms-df-003" source="EHR System" destination="Patient Database"
+          protocol="SQL" data="Patient records, medical history"
+          encrypted="false" authenticated="true"
+          crosses_trust_boundary="true" bidirectional="true"/>
+
+    <flow id="hms-df-004" source="EHR System" destination="Laboratory System"
+          protocol="HTTP" data="Lab test orders and results"
+          encrypted="false" authenticated="true"
+          crosses_trust_boundary="false" bidirectional="true"/>
+
+    <flow id="hms-df-005" source="Billing System" destination="Insurance Gateway"
+          protocol="HTTPS" data="Insurance claims with patient data"
+          encrypted="true" authenticated="true"
+          crosses_trust_boundary="true" bidirectional="true"/>
+
+    <flow id="hms-df-006" source="Billing System" destination="Patient Database"
+          protocol="SQL" data="Billing records and patient PII"
+          encrypted="false" authenticated="false"
+          crosses_trust_boundary="true" bidirectional="true"/>
+  </data_flows>
+
+  <trust_boundaries>
+    <boundary id="hms-tb-001" name="Internet / Hospital Boundary"
+              zone_from="external" zone_to="internal"
+              description="Public patient portal to internal hospital systems"/>
+    <boundary id="hms-tb-002" name="Internal / Data Tier"
+              zone_from="internal" zone_to="data"
+              description="Services accessing the patient database"/>
+    <boundary id="hms-tb-003" name="Internal / External Integration"
+              zone_from="internal" zone_to="external"
+              description="Insurance gateway integration boundary"/>
+  </trust_boundaries>
+
+</architecture>

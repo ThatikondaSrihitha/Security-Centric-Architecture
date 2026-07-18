@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<architecture name="Secure Government Portal" id="arch-gov-001"
+  description="A fully secured e-governance portal with all security controls enabled. Low risk design.">
+
+  <components>
+    <component id="c-001" name="Citizen Portal"
+      type="service" zone="dmz"
+      internet_facing="true" data_sensitivity="medium"
+      authentication="true" authorization="true"
+      encryption_at_rest="true" logging_enabled="true"
+      rate_limiting="true" input_validation="true"
+      description="Public-facing portal for citizens — all controls enabled"/>
+
+    <component id="c-002" name="API Gateway"
+      type="api" zone="dmz"
+      internet_facing="true" data_sensitivity="low"
+      authentication="true" authorization="true"
+      encryption_at_rest="true" logging_enabled="true"
+      rate_limiting="true" input_validation="true"
+      description="Central API gateway with WAF and rate limiting"/>
+
+    <component id="c-003" name="Identity Service"
+      type="service" zone="internal"
+      internet_facing="false" data_sensitivity="high"
+      authentication="true" authorization="true"
+      encryption_at_rest="true" logging_enabled="true"
+      rate_limiting="true" input_validation="true"
+      description="OAuth2 + MFA identity and access management"/>
+
+    <component id="c-004" name="Document Service"
+      type="service" zone="internal"
+      internet_facing="false" data_sensitivity="high"
+      authentication="true" authorization="true"
+      encryption_at_rest="true" logging_enabled="true"
+      rate_limiting="true" input_validation="true"
+      description="Secure document management and storage"/>
+
+    <component id="c-005" name="Payment Gateway"
+      type="service" zone="internal"
+      internet_facing="false" data_sensitivity="critical"
+      authentication="true" authorization="true"
+      encryption_at_rest="true" logging_enabled="true"
+      rate_limiting="true" input_validation="true"
+      description="Secure fee payment processor — PCI-DSS compliant"/>
+
+    <component id="c-006" name="Citizen Database"
+      type="database" zone="data"
+      internet_facing="false" data_sensitivity="critical"
+      authentication="true" authorization="true"
+      encryption_at_rest="true" logging_enabled="true"
+      rate_limiting="false" input_validation="true"
+      description="Encrypted database — citizen records"/>
+
+    <component id="c-007" name="Audit Log Database"
+      type="database" zone="data"
+      internet_facing="false" data_sensitivity="medium"
+      authentication="true" authorization="true"
+      encryption_at_rest="true" logging_enabled="true"
+      rate_limiting="false" input_validation="true"
+      description="Tamper-proof audit trail storage"/>
+  </components>
+
+  <data_flows>
+    <flow id="df-001" source="Citizen Portal" destination="API Gateway"
+      protocol="HTTPS" data="Authenticated citizen requests"
+      encrypted="true" authenticated="true"
+      crosses_trust_boundary="false" bidirectional="true"/>
+
+    <flow id="df-002" source="API Gateway" destination="Identity Service"
+      protocol="HTTPS" data="Token validation"
+      encrypted="true" authenticated="true"
+      crosses_trust_boundary="true" bidirectional="true"/>
+
+    <flow id="df-003" source="API Gateway" destination="Document Service"
+      protocol="HTTPS" data="Document requests"
+      encrypted="true" authenticated="true"
+      crosses_trust_boundary="true" bidirectional="true"/>
+
+    <flow id="df-004" source="API Gateway" destination="Payment Gateway"
+      protocol="HTTPS" data="Payment requests"
+      encrypted="true" authenticated="true"
+      crosses_trust_boundary="true" bidirectional="true"/>
+
+    <flow id="df-005" source="Identity Service" destination="Citizen Database"
+      protocol="SQL" data="Encrypted citizen profile lookup"
+      encrypted="true" authenticated="true"
+      crosses_trust_boundary="true" bidirectional="true"/>
+
+    <flow id="df-006" source="Document Service" destination="Audit Log Database"
+      protocol="HTTPS" data="Document access audit events"
+      encrypted="true" authenticated="true"
+      crosses_trust_boundary="true" bidirectional="false"/>
+  </data_flows>
+
+  <trust_boundaries>
+    <boundary id="tb-001" name="Internet / DMZ"
+      zone_from="external" zone_to="dmz"
+      description="Public internet to DMZ — WAF + DDoS protection"/>
+    <boundary id="tb-002" name="DMZ / Internal"
+      zone_from="dmz" zone_to="internal"
+      description="DMZ to internal services — mTLS enforced"/>
+    <boundary id="tb-003" name="Internal / Data"
+      zone_from="internal" zone_to="data"
+      description="Services to data tier — encrypted + strictly authorized"/>
+  </trust_boundaries>
+
+</architecture>

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<architecture name="Legacy Hospital Management System" id="arch-hosp-001"
+  description="An outdated hospital system with critical security gaps. High risk — many controls missing across multiple components.">
+
+  <components>
+    <component id="c-001" name="Patient Web Portal"
+      type="service" zone="external"
+      internet_facing="true" data_sensitivity="critical"
+      authentication="false" authorization="false"
+      encryption_at_rest="false" logging_enabled="false"
+      rate_limiting="false" input_validation="false"
+      description="Patient portal — NO security controls at all"/>
+
+    <component id="c-002" name="Doctor Dashboard"
+      type="service" zone="external"
+      internet_facing="true" data_sensitivity="critical"
+      authentication="true" authorization="false"
+      encryption_at_rest="false" logging_enabled="false"
+      rate_limiting="false" input_validation="false"
+      description="Doctor interface — auth only, no authorization"/>
+
+    <component id="c-003" name="Admin Panel"
+      type="service" zone="external"
+      internet_facing="true" data_sensitivity="critical"
+      authentication="false" authorization="false"
+      encryption_at_rest="false" logging_enabled="false"
+      rate_limiting="false" input_validation="false"
+      description="Hospital admin — completely unsecured"/>
+
+    <component id="c-004" name="Medical Records Service"
+      type="service" zone="internal"
+      internet_facing="false" data_sensitivity="critical"
+      authentication="false" authorization="false"
+      encryption_at_rest="false" logging_enabled="false"
+      rate_limiting="false" input_validation="false"
+      description="Medical records — no security controls"/>
+
+    <component id="c-005" name="Billing Service"
+      type="service" zone="internal"
+      internet_facing="false" data_sensitivity="critical"
+      authentication="false" authorization="false"
+      encryption_at_rest="false" logging_enabled="false"
+      rate_limiting="false" input_validation="false"
+      description="Billing and payments — critical data, no controls"/>
+
+    <component id="c-006" name="Pharmacy Service"
+      type="service" zone="internal"
+      internet_facing="false" data_sensitivity="high"
+      authentication="true" authorization="false"
+      encryption_at_rest="false" logging_enabled="false"
+      rate_limiting="false" input_validation="false"
+      description="Drug dispensing — minimal security"/>
+
+    <component id="c-007" name="Patient Database"
+      type="database" zone="internal"
+      internet_facing="true" data_sensitivity="critical"
+      authentication="false" authorization="false"
+      encryption_at_rest="false" logging_enabled="false"
+      rate_limiting="false" input_validation="false"
+      description="Patient records DB — EXPOSED TO INTERNET — critical risk"/>
+
+    <component id="c-008" name="Billing Database"
+      type="database" zone="internal"
+      internet_facing="false" data_sensitivity="critical"
+      authentication="false" authorization="false"
+      encryption_at_rest="false" logging_enabled="false"
+      rate_limiting="false" input_validation="false"
+      description="Financial records — no encryption, no auth"/>
+
+    <component id="c-009" name="External Lab System"
+      type="external" zone="external"
+      internet_facing="true" data_sensitivity="high"
+      authentication="false" authorization="false"
+      encryption_at_rest="false" logging_enabled="false"
+      rate_limiting="false" input_validation="false"
+      description="Third-party lab — unverified identity"/>
+  </components>
+
+  <data_flows>
+    <flow id="df-001" source="Patient Web Portal" destination="Medical Records Service"
+      protocol="HTTP"
+      data="sensitive patient personal medical history password"
+      encrypted="false" authenticated="false"
+      crosses_trust_boundary="true" bidirectional="true"/>
+
+    <flow id="df-002" source="Admin Panel" destination="Patient Database"
+      protocol="HTTP"
+      data="sensitive admin credentials patient records"
+      encrypted="false" authenticated="false"
+      crosses_trust_boundary="true" bidirectional="true"/>
+
+    <flow id="df-003" source="Doctor Dashboard" destination="Medical Records Service"
+      protocol="HTTP"
+      data="sensitive patient medical records personal"
+      encrypted="false" authenticated="false"
+      crosses_trust_boundary="true" bidirectional="true"/>
+
+    <flow id="df-004" source="Billing Service" destination="Billing Database"
+      protocol="HTTP"
+      data="payment credit card personal billing information sensitive"
+      encrypted="false" authenticated="false"
+      crosses_trust_boundary="false" bidirectional="true"/>
+
+    <flow id="df-005" source="Medical Records Service" destination="Patient Database"
+      protocol="HTTP"
+      data="sensitive patient records personal information"
+      encrypted="false" authenticated="false"
+      crosses_trust_boundary="false" bidirectional="true"/>
+
+    <flow id="df-006" source="External Lab System" destination="Medical Records Service"
+      protocol="HTTP"
+      data="sensitive lab results patient token personal"
+      encrypted="false" authenticated="false"
+      crosses_trust_boundary="true" bidirectional="false"/>
+
+    <flow id="df-007" source="Pharmacy Service" destination="Patient Database"
+      protocol="HTTP"
+      data="prescription sensitive medication orders"
+      encrypted="false" authenticated="false"
+      crosses_trust_boundary="false" bidirectional="true"/>
+
+    <flow id="df-008" source="Admin Panel" destination="Billing Service"
+      protocol="HTTP"
+      data="payment credit card personal sensitive financial data"
+      encrypted="false" authenticated="false"
+      crosses_trust_boundary="true" bidirectional="true"/>
+
+    <flow id="df-009" source="Doctor Dashboard" destination="Pharmacy Service"
+      protocol="HTTP"
+      data="drug prescriptions sensitive"
+      encrypted="false" authenticated="false"
+      crosses_trust_boundary="false" bidirectional="true"/>
+  </data_flows>
+
+  <trust_boundaries>
+    <boundary id="tb-001" name="Internet / Internal"
+      zone_from="external" zone_to="internal"
+      description="No firewall — direct internet exposure of internal systems"/>
+    <boundary id="tb-002" name="External System Boundary"
+      zone_from="external" zone_to="internal"
+      description="Third-party lab access — no identity verification"/>
+  </trust_boundaries>
+
+</architecture>

@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<architecture name="University Student Portal" id="arch-univ-001"
+  description="A university portal with some security gaps. Medium risk — partial controls missing.">
+
+  <components>
+    <component id="c-001" name="Student Web App"
+      type="service" zone="dmz"
+      internet_facing="true" data_sensitivity="medium"
+      authentication="true" authorization="true"
+      encryption_at_rest="false" logging_enabled="true"
+      rate_limiting="false" input_validation="true"
+      description="Student-facing web application — missing rate limiting"/>
+
+    <component id="c-002" name="Faculty Portal"
+      type="service" zone="dmz"
+      internet_facing="true" data_sensitivity="medium"
+      authentication="true" authorization="true"
+      encryption_at_rest="false" logging_enabled="true"
+      rate_limiting="false" input_validation="false"
+      description="Faculty management portal — missing input validation"/>
+
+    <component id="c-003" name="API Gateway"
+      type="api" zone="dmz"
+      internet_facing="true" data_sensitivity="low"
+      authentication="true" authorization="true"
+      encryption_at_rest="false" logging_enabled="true"
+      rate_limiting="false" input_validation="true"
+      description="API gateway — missing rate limiting"/>
+
+    <component id="c-004" name="Course Service"
+      type="service" zone="internal"
+      internet_facing="false" data_sensitivity="low"
+      authentication="true" authorization="false"
+      encryption_at_rest="false" logging_enabled="true"
+      rate_limiting="false" input_validation="true"
+      description="Course management — missing authorization"/>
+
+    <component id="c-005" name="Exam Service"
+      type="service" zone="internal"
+      internet_facing="false" data_sensitivity="high"
+      authentication="true" authorization="true"
+      encryption_at_rest="false" logging_enabled="false"
+      rate_limiting="false" input_validation="true"
+      description="Exam management — missing logging on sensitive data"/>
+
+    <component id="c-006" name="Student Database"
+      type="database" zone="data"
+      internet_facing="false" data_sensitivity="high"
+      authentication="true" authorization="false"
+      encryption_at_rest="false" logging_enabled="false"
+      rate_limiting="false" input_validation="false"
+      description="Student records — missing authorization and encryption"/>
+
+    <component id="c-007" name="Results Database"
+      type="database" zone="data"
+      internet_facing="false" data_sensitivity="high"
+      authentication="true" authorization="true"
+      encryption_at_rest="false" logging_enabled="false"
+      rate_limiting="false" input_validation="false"
+      description="Exam results — missing encryption at rest"/>
+
+    <component id="c-008" name="Notification Service"
+      type="service" zone="internal"
+      internet_facing="false" data_sensitivity="low"
+      authentication="false" authorization="false"
+      encryption_at_rest="false" logging_enabled="false"
+      rate_limiting="false" input_validation="false"
+      description="Email/SMS notifications — minimal security"/>
+  </components>
+
+  <data_flows>
+    <flow id="df-001" source="Student Web App" destination="API Gateway"
+      protocol="HTTPS" data="Student requests and form submissions"
+      encrypted="true" authenticated="true"
+      crosses_trust_boundary="false" bidirectional="true"/>
+
+    <flow id="df-002" source="Faculty Portal" destination="API Gateway"
+      protocol="HTTPS" data="Faculty grade submissions"
+      encrypted="true" authenticated="true"
+      crosses_trust_boundary="false" bidirectional="true"/>
+
+    <flow id="df-003" source="API Gateway" destination="Course Service"
+      protocol="HTTP" data="Course queries"
+      encrypted="false" authenticated="true"
+      crosses_trust_boundary="true" bidirectional="true"/>
+
+    <flow id="df-004" source="API Gateway" destination="Exam Service"
+      protocol="HTTP" data="Exam data and results"
+      encrypted="false" authenticated="true"
+      crosses_trust_boundary="true" bidirectional="true"/>
+
+    <flow id="df-005" source="Course Service" destination="Student Database"
+      protocol="SQL" data="Student enrollment records"
+      encrypted="false" authenticated="true"
+      crosses_trust_boundary="true" bidirectional="true"/>
+
+    <flow id="df-006" source="Exam Service" destination="Results Database"
+      protocol="SQL" data="Exam results and grades"
+      encrypted="false" authenticated="true"
+      crosses_trust_boundary="true" bidirectional="true"/>
+
+    <flow id="df-007" source="Notification Service" destination="Student Web App"
+      protocol="HTTP" data="Notification messages"
+      encrypted="false" authenticated="false"
+      crosses_trust_boundary="false" bidirectional="false"/>
+
+    <flow id="df-008" source="Course Service" destination="Notification Service"
+      protocol="HTTP" data="Course update alerts"
+      encrypted="false" authenticated="false"
+      crosses_trust_boundary="false" bidirectional="false"/>
+  </data_flows>
+
+  <trust_boundaries>
+    <boundary id="tb-001" name="Internet / DMZ"
+      zone_from="external" zone_to="dmz"
+      description="Public internet to DMZ — basic firewall only"/>
+    <boundary id="tb-002" name="DMZ / Internal"
+      zone_from="dmz" zone_to="internal"
+      description="DMZ to internal — partial controls"/>
+    <boundary id="tb-003" name="Internal / Data"
+      zone_from="internal" zone_to="data"
+      description="Services to databases — some controls missing"/>
+  </trust_boundaries>
+
+</architecture>

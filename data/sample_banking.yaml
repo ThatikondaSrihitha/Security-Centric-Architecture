@@ -1,0 +1,178 @@
+name: Online Banking System
+description: >
+  Secure online banking platform supporting retail and corporate customers
+  with multi-factor authentication and regulatory compliance requirements.
+
+components:
+  - id: ob-customer
+    name: Retail Customer
+    type: user
+    description: Online banking end user
+    zone: external
+    internet_facing: true
+    data_sensitivity: high
+    authentication: false
+    authorization: false
+    encryption_at_rest: false
+    logging_enabled: false
+    rate_limiting: false
+    input_validation: false
+
+  - id: ob-corporate
+    name: Corporate User
+    type: user
+    description: Corporate banking customer
+    zone: external
+    internet_facing: true
+    data_sensitivity: critical
+    authentication: false
+    authorization: false
+    encryption_at_rest: false
+    logging_enabled: false
+    rate_limiting: false
+    input_validation: false
+
+  - id: ob-webportal
+    name: Web Banking Portal
+    type: service
+    description: Web interface for retail banking
+    zone: dmz
+    internet_facing: true
+    data_sensitivity: high
+    authentication: true
+    authorization: true
+    encryption_at_rest: false
+    logging_enabled: true
+    rate_limiting: true
+    input_validation: false
+
+  - id: ob-mfa
+    name: MFA Service
+    type: service
+    description: Handles multi-factor authentication via OTP/TOTP
+    zone: internal
+    internet_facing: false
+    data_sensitivity: critical
+    authentication: true
+    authorization: true
+    encryption_at_rest: false
+    logging_enabled: true
+    rate_limiting: true
+    input_validation: true
+
+  - id: ob-corebanking
+    name: Core Banking System
+    type: service
+    description: Core transaction processing engine
+    zone: internal
+    internet_facing: false
+    data_sensitivity: critical
+    authentication: true
+    authorization: true
+    encryption_at_rest: false
+    logging_enabled: true
+    rate_limiting: false
+    input_validation: true
+
+  - id: ob-transactiondb
+    name: Transaction Database
+    type: database
+    description: Stores all financial transactions
+    zone: data
+    internet_facing: false
+    data_sensitivity: critical
+    authentication: true
+    authorization: false
+    encryption_at_rest: false
+    logging_enabled: false
+    rate_limiting: false
+    input_validation: false
+
+  - id: ob-swift
+    name: SWIFT Gateway
+    type: external
+    description: International payment network gateway
+    zone: external
+    internet_facing: true
+    data_sensitivity: critical
+    authentication: true
+    authorization: false
+    encryption_at_rest: false
+    logging_enabled: false
+    rate_limiting: false
+    input_validation: false
+
+data_flows:
+  - id: ob-df-001
+    source: Retail Customer
+    destination: Web Banking Portal
+    protocol: HTTPS
+    data: Login credentials, transaction requests
+    encrypted: true
+    authenticated: false
+    crosses_trust_boundary: true
+    bidirectional: true
+
+  - id: ob-df-002
+    source: Web Banking Portal
+    destination: MFA Service
+    protocol: HTTP
+    data: OTP verification requests
+    encrypted: false
+    authenticated: true
+    crosses_trust_boundary: true
+    bidirectional: true
+
+  - id: ob-df-003
+    source: Web Banking Portal
+    destination: Core Banking System
+    protocol: HTTP
+    data: Fund transfer requests, balance queries
+    encrypted: false
+    authenticated: true
+    crosses_trust_boundary: true
+    bidirectional: true
+
+  - id: ob-df-004
+    source: Core Banking System
+    destination: Transaction Database
+    protocol: SQL
+    data: Transaction records, account data
+    encrypted: false
+    authenticated: true
+    crosses_trust_boundary: true
+    bidirectional: true
+
+  - id: ob-df-005
+    source: Core Banking System
+    destination: SWIFT Gateway
+    protocol: HTTPS
+    data: International wire transfer instructions
+    encrypted: true
+    authenticated: true
+    crosses_trust_boundary: true
+    bidirectional: true
+
+trust_boundaries:
+  - id: ob-tb-001
+    name: Internet / DMZ
+    zone_from: external
+    zone_to: dmz
+    description: Public internet to banking portal boundary
+
+  - id: ob-tb-002
+    name: DMZ / Internal
+    zone_from: dmz
+    zone_to: internal
+    description: Portal to core banking boundary
+
+  - id: ob-tb-003
+    name: Internal / Data
+    zone_from: internal
+    zone_to: data
+    description: Core services to data tier
+
+metadata:
+  source_file: sample_banking.yaml
+  version: "1.0"
+  regulatory: PCI-DSS, SOX, GDPR

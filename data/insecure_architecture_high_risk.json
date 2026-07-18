@@ -1,0 +1,237 @@
+{
+  "name": "Vulnerable Healthcare System",
+  "description": "A poorly secured hospital management system with almost no security controls. Demonstrates critical risk architecture with maximum threat exposure.",
+  "components": [
+    {
+      "id": "c-001",
+      "name": "Patient Portal",
+      "type": "service",
+      "description": "Public-facing patient portal — NO authentication enforced",
+      "zone": "external",
+      "internet_facing": true,
+      "data_sensitivity": "critical",
+      "authentication": false,
+      "authorization": false,
+      "encryption_at_rest": false,
+      "logging_enabled": false,
+      "rate_limiting": false,
+      "input_validation": false
+    },
+    {
+      "id": "c-002",
+      "name": "Admin Panel",
+      "type": "service",
+      "description": "Hospital admin interface — exposed to internet with no auth",
+      "zone": "external",
+      "internet_facing": true,
+      "data_sensitivity": "critical",
+      "authentication": false,
+      "authorization": false,
+      "encryption_at_rest": false,
+      "logging_enabled": false,
+      "rate_limiting": false,
+      "input_validation": false
+    },
+    {
+      "id": "c-003",
+      "name": "Doctor API",
+      "type": "api",
+      "description": "API for doctor records — no rate limiting or validation",
+      "zone": "internal",
+      "internet_facing": true,
+      "data_sensitivity": "high",
+      "authentication": false,
+      "authorization": false,
+      "encryption_at_rest": false,
+      "logging_enabled": false,
+      "rate_limiting": false,
+      "input_validation": false
+    },
+    {
+      "id": "c-004",
+      "name": "Patient Records Service",
+      "type": "service",
+      "description": "Stores sensitive patient medical records — completely unsecured",
+      "zone": "internal",
+      "internet_facing": false,
+      "data_sensitivity": "critical",
+      "authentication": false,
+      "authorization": false,
+      "encryption_at_rest": false,
+      "logging_enabled": false,
+      "rate_limiting": false,
+      "input_validation": false
+    },
+    {
+      "id": "c-005",
+      "name": "Billing Service",
+      "type": "service",
+      "description": "Payment and billing — handles card data without security",
+      "zone": "internal",
+      "internet_facing": false,
+      "data_sensitivity": "critical",
+      "authentication": false,
+      "authorization": false,
+      "encryption_at_rest": false,
+      "logging_enabled": false,
+      "rate_limiting": false,
+      "input_validation": false
+    },
+    {
+      "id": "c-006",
+      "name": "Patient Database",
+      "type": "database",
+      "description": "Stores all patient PII, medical history — NO encryption",
+      "zone": "internal",
+      "internet_facing": true,
+      "data_sensitivity": "critical",
+      "authentication": false,
+      "authorization": false,
+      "encryption_at_rest": false,
+      "logging_enabled": false,
+      "rate_limiting": false,
+      "input_validation": false
+    },
+    {
+      "id": "c-007",
+      "name": "Pharmacy Database",
+      "type": "database",
+      "description": "Drug prescription records — no access control",
+      "zone": "internal",
+      "internet_facing": false,
+      "data_sensitivity": "critical",
+      "authentication": false,
+      "authorization": false,
+      "encryption_at_rest": false,
+      "logging_enabled": false,
+      "rate_limiting": false,
+      "input_validation": false
+    },
+    {
+      "id": "c-008",
+      "name": "External Lab System",
+      "type": "external",
+      "description": "Third party lab results system — unverified identity",
+      "zone": "external",
+      "internet_facing": true,
+      "data_sensitivity": "high",
+      "authentication": false,
+      "authorization": false,
+      "encryption_at_rest": false,
+      "logging_enabled": false,
+      "rate_limiting": false,
+      "input_validation": false
+    }
+  ],
+  "data_flows": [
+    {
+      "id": "df-001",
+      "source": "Patient Portal",
+      "destination": "Patient Records Service",
+      "protocol": "HTTP",
+      "data": "sensitive patient personal information and medical history password token",
+      "encrypted": false,
+      "authenticated": false,
+      "crosses_trust_boundary": true,
+      "bidirectional": true
+    },
+    {
+      "id": "df-002",
+      "source": "Admin Panel",
+      "destination": "Patient Database",
+      "protocol": "HTTP",
+      "data": "admin credentials and sensitive patient data payment",
+      "encrypted": false,
+      "authenticated": false,
+      "crosses_trust_boundary": true,
+      "bidirectional": true
+    },
+    {
+      "id": "df-003",
+      "source": "Doctor API",
+      "destination": "Patient Records Service",
+      "protocol": "HTTP",
+      "data": "personal patient medical records sensitive",
+      "encrypted": false,
+      "authenticated": false,
+      "crosses_trust_boundary": true,
+      "bidirectional": true
+    },
+    {
+      "id": "df-004",
+      "source": "Billing Service",
+      "destination": "Patient Database",
+      "protocol": "HTTP",
+      "data": "payment card data credit personal details",
+      "encrypted": false,
+      "authenticated": false,
+      "crosses_trust_boundary": false,
+      "bidirectional": true
+    },
+    {
+      "id": "df-005",
+      "source": "Patient Records Service",
+      "destination": "Pharmacy Database",
+      "protocol": "HTTP",
+      "data": "prescription and sensitive medication data",
+      "encrypted": false,
+      "authenticated": false,
+      "crosses_trust_boundary": false,
+      "bidirectional": true
+    },
+    {
+      "id": "df-006",
+      "source": "External Lab System",
+      "destination": "Patient Records Service",
+      "protocol": "HTTP",
+      "data": "sensitive lab test results and patient token password",
+      "encrypted": false,
+      "authenticated": false,
+      "crosses_trust_boundary": true,
+      "bidirectional": false
+    },
+    {
+      "id": "df-007",
+      "source": "Doctor API",
+      "destination": "Pharmacy Database",
+      "protocol": "HTTP",
+      "data": "prescription orders sensitive",
+      "encrypted": false,
+      "authenticated": false,
+      "crosses_trust_boundary": false,
+      "bidirectional": true
+    },
+    {
+      "id": "df-008",
+      "source": "Admin Panel",
+      "destination": "Billing Service",
+      "protocol": "HTTP",
+      "data": "payment and credit card personal information sensitive",
+      "encrypted": false,
+      "authenticated": false,
+      "crosses_trust_boundary": true,
+      "bidirectional": true
+    }
+  ],
+  "trust_boundaries": [
+    {
+      "id": "tb-001",
+      "name": "Internet / Internal Boundary",
+      "zone_from": "external",
+      "zone_to": "internal",
+      "description": "No firewall or WAF — direct exposure of internal services"
+    },
+    {
+      "id": "tb-002",
+      "name": "External System Boundary",
+      "zone_from": "external",
+      "zone_to": "internal",
+      "description": "Third-party lab system with no identity verification"
+    }
+  ],
+  "metadata": {
+    "source_file": "insecure_architecture_high_risk.json",
+    "version": "1.0",
+    "security_level": "CRITICAL — almost no controls enabled"
+  }
+}
