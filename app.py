@@ -36,37 +36,45 @@ init_session()
 with st.sidebar:
     st.markdown(f"""
 <div style="
-    background: linear-gradient(135deg, #0f3460 0%, #16213e 100%);
-    border-radius: 12px;
-    padding: 18px 16px;
+    background: linear-gradient(135deg, #0a1628 0%, #0d1f3c 100%);
+    border-radius: 10px;
+    padding: 20px 16px;
     margin-bottom: 20px;
-    border: 1px solid #1e3a5f;
+    border: 1px solid rgba(0,212,255,0.12);
     text-align: center;
 ">
-  <div style="font-size:2rem; margin-bottom:8px;">🔐</div>
-  <div style="color:#00D4FF; font-weight:900; font-size:0.95rem; line-height:1.3;">
+  <div style="
+      width: 36px; height: 36px;
+      background: rgba(0,212,255,0.1);
+      border: 1px solid rgba(0,212,255,0.25);
+      border-radius: 8px;
+      margin: 0 auto 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; font-weight: 900; color: #00D4FF;
+  ">S</div>
+  <div style="color:#e2e8f0; font-weight:700; font-size:0.88rem; line-height:1.4;">
     Security Architecture<br>Framework
   </div>
-  <div style="color:#9ca3af; font-size:0.75rem; margin-top:6px;">v{APP_VERSION}</div>
+  <div style="color:#475569; font-size:0.7rem; margin-top:5px; letter-spacing:0.05em;">v{APP_VERSION}</div>
 </div>
 """, unsafe_allow_html=True)
 
     pages = [
-        ("🏠 Home",                        "Home"),
-        ("👤 Login / Profile",             "Login"),
-        ("🔍 New Architecture Assessment",  "New Architecture Assessment"),
-        ("📊 Security Dashboard",           "Security Dashboard"),
-        ("🗺️ Architecture Visualization",   "Architecture Visualization"),
-        ("🎯 STRIDE Threat Analysis",       "STRIDE Threat Analysis"),
-        ("📈 Risk Assessment",              "Risk Assessment"),
-        ("🗝️ Security Pattern Library",     "Security Pattern Library"),
-        ("🏛️ Architecture Patterns",        "Architecture Patterns"),
-        ("💡 Recommendations",              "Recommendations"),
-        ("🌳 Attack Tree Analysis",         "Attack Tree Analysis"),
-        ("🎯 DREAD & OWASP Mapping",        "DREAD & OWASP Mapping"),
-        ("🤖 AI Security Assistant",        "AI Security Assistant"),
-        ("📄 Reports",                      "Reports"),
-        ("🕐 Analysis History",             "Analysis History"),
+        ("Home",                        "Home"),
+        ("Login / Profile",             "Login"),
+        ("New Architecture Assessment", "New Architecture Assessment"),
+        ("Security Dashboard",          "Security Dashboard"),
+        ("Architecture Visualization",  "Architecture Visualization"),
+        ("STRIDE Threat Analysis",      "STRIDE Threat Analysis"),
+        ("Risk Assessment",             "Risk Assessment"),
+        ("Security Pattern Library",    "Security Pattern Library"),
+        ("Architecture Patterns",       "Architecture Patterns"),
+        ("Recommendations",             "Recommendations"),
+        ("Attack Tree Analysis",        "Attack Tree Analysis"),
+        ("DREAD & OWASP Mapping",       "DREAD & OWASP Mapping"),
+        ("AI Security Assistant",       "AI Security Assistant"),
+        ("Reports",                     "Reports"),
+        ("Analysis History",            "Analysis History"),
     ]
 
     st.markdown("### Navigation")
@@ -76,7 +84,7 @@ with st.sidebar:
             st.rerun()
 
     st.markdown("---")
-    if st.button("▶️ Run E-Commerce Demo", type="primary", use_container_width=True):
+    if st.button("Run E-Commerce Demo", type="primary", use_container_width=True):
         st.session_state["current_page"] = "New Architecture Assessment"
         st.session_state["trigger_demo"] = True
         st.rerun()

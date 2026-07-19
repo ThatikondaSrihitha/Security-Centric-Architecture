@@ -54,7 +54,7 @@ def show() -> None:
         _run_sample("E-Commerce System")
         return
 
-    tab1, tab2, tab3 = st.tabs(["📁 Upload File", "📋 Sample Architectures", "✏️ Manual Entry"])
+    tab1, tab2, tab3 = st.tabs(["Upload File", "Sample Architectures", "Manual Entry"])
 
     with tab1:
         _upload_tab()
@@ -118,7 +118,7 @@ def _upload_tab() -> None:
 </div>
 """, unsafe_allow_html=True)
 
-        if st.button("🔍 Run Security Assessment", type="primary", use_container_width=True):
+        if st.button("Run Security Assessment", type="primary", use_container_width=True):
             with st.spinner("Parsing architecture…"):
                 try:
                     parser = parser_cls()
@@ -150,7 +150,7 @@ def _sample_tab() -> None:
     choice = st.selectbox("Select a sample architecture", list(_SAMPLES.keys()))
     _show_sample_info(choice)
 
-    if st.button(f"▶️ Run Assessment on {choice}", type="primary"):
+    if st.button(f"Run Assessment on {choice}", type="primary"):
         _run_sample(choice)
 
 
@@ -208,7 +208,7 @@ def _manual_tab() -> None:
 
     # Components
     section_heading("Components")
-    with st.expander("➕ Add Component", expanded=True):
+    with st.expander("Add Component", expanded=True):
         cc1, cc2, cc3 = st.columns(3)
         comp_name = cc1.text_input("Component Name *", key="new_comp_name")
         comp_type = cc2.selectbox("Type", ["service","database","api","user","external","queue","storage"], key="new_comp_type")
@@ -256,7 +256,7 @@ def _manual_tab() -> None:
     section_heading("Data Flows")
     comp_names = [c["name"] for c in ma["components"]]
     if len(comp_names) >= 2:
-        with st.expander("➕ Add Data Flow", expanded=True):
+        with st.expander("Add Data Flow", expanded=True):
             df1, df2, df3 = st.columns(3)
             df_src  = df1.selectbox("Source *", comp_names, key="new_df_src")
             df_dst  = df2.selectbox("Destination *", [n for n in comp_names if n != df_src], key="new_df_dst")
@@ -290,7 +290,7 @@ def _manual_tab() -> None:
                 st.rerun()
 
     # Run
-    if st.button("🔍 Run Security Assessment", type="primary", key="run_manual_btn"):
+    if st.button("Run Security Assessment", type="primary", key="run_manual_btn"):
         if not ma["name"].strip():
             st.error("Architecture Name is required.")
             return

@@ -264,7 +264,7 @@ def _build_tree_figure(tree_name: str, tree_data: Dict) -> go.Figure:
 
 def show() -> None:
     inject_css()
-    page_header("🌳", "Attack Tree Visualization",
+    page_header("Attack Tree Visualization",
                 "Visual decomposition of attack paths — understand how threats are realized.")
 
     tab1, tab2 = st.tabs(["📊 Pre-Built Attack Trees", "🔍 Analysis-Based Trees"])
@@ -345,7 +345,7 @@ def show() -> None:
 
         if not has_analysis():
             st.info("Run an architecture assessment first to generate attack trees from your specific threats.")
-            if st.button("🚀 Run E-Commerce Demo"):
+            if st.button("Run E-Commerce Demo"):
                 st.session_state["current_page"] = "New Architecture Assessment"
                 st.session_state["trigger_demo"] = True
                 st.rerun()

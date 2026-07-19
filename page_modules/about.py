@@ -9,7 +9,7 @@ from page_modules.shared_styles import inject_css, page_header, section_heading
 
 def show() -> None:
     inject_css()
-    page_header("ℹ️", "About This Project", "Project details, academic information, and framework overview.")
+    page_header("About This Project", "Project details, academic information, and framework overview.")
 
     # Project info card
     st.markdown(f"""

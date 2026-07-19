@@ -13,11 +13,11 @@ from reports.report_generator import (
 
 def show() -> None:
     inject_css()
-    page_header("📄", "Report Generation", "Download professional security assessment reports in multiple formats.")
+    page_header("Report Generation", "Download professional security assessment reports in multiple formats.")
 
     if not has_analysis():
         st.info("Run an architecture assessment first to generate reports.")
-        if st.button("🚀 Run E-Commerce Demo"):
+        if st.button("Run E-Commerce Demo"):
             st.session_state["current_page"] = "New Architecture Assessment"
             st.session_state["trigger_demo"] = True
             st.rerun()
@@ -53,7 +53,7 @@ def show() -> None:
             html_bytes = get_html_report(result).encode("utf-8")
             fn_html    = build_filename(arch_name, "html")
             st.download_button(
-                "⬇️ Download HTML Report",
+                "Download HTML Report",
                 data=html_bytes,
                 file_name=fn_html,
                 mime="text/html",
@@ -73,7 +73,7 @@ def show() -> None:
             pdf_bytes = get_pdf_report(result)
             fn_pdf    = build_filename(arch_name, "pdf")
             st.download_button(
-                "⬇️ Download PDF Report",
+                "Download PDF Report",
                 data=pdf_bytes,
                 file_name=fn_pdf,
                 mime="application/pdf",
@@ -95,7 +95,7 @@ def show() -> None:
             json_str = get_json_report(result)
             fn_json  = build_filename(arch_name, "json")
             st.download_button(
-                "⬇️ Download JSON Export",
+                "Download JSON Export",
                 data=json_str.encode("utf-8"),
                 file_name=fn_json,
                 mime="application/json",
@@ -116,7 +116,7 @@ def show() -> None:
             csv_threats = get_csv_threats(result)
             fn_csv_t    = build_filename(arch_name + "_threats", "csv")
             col_a.download_button(
-                "⬇️ Threats CSV",
+                "Threats CSV",
                 data=csv_threats.encode("utf-8"),
                 file_name=fn_csv_t,
                 mime="text/csv",
@@ -128,7 +128,7 @@ def show() -> None:
             csv_recs = get_csv_recommendations(result)
             fn_csv_r = build_filename(arch_name + "_recommendations", "csv")
             col_b.download_button(
-                "⬇️ Recommendations CSV",
+                "Recommendations CSV",
                 data=csv_recs.encode("utf-8"),
                 file_name=fn_csv_r,
                 mime="text/csv",
@@ -141,7 +141,7 @@ def show() -> None:
 
     # Report contents preview
     section_heading("Report Contents")
-    with st.expander("📋 View Report Sections", expanded=True):
+    with st.expander("View Report Sections", expanded=True):
         sections = [
             ("1", "Cover Page", "Analysis ID, date, architecture name"),
             ("2", "Executive Summary", "Key metrics, risk level, threat counts"),
@@ -159,7 +159,7 @@ def show() -> None:
 
     # Preview HTML inline
     section_heading("HTML Report Preview")
-    with st.expander("👁️ Preview HTML Report in Browser", expanded=False):
+    with st.expander("HTML Report Preview", expanded=False):
         try:
             html_content = get_html_report(result)
             st.components.v1.html(html_content, height=600, scrolling=True)

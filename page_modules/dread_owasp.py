@@ -162,7 +162,7 @@ STRIDE_OWASP_MAP = {
 
 def show() -> None:
     inject_css()
-    page_header("🎯", "DREAD Scoring & OWASP Top 10", "Quantitative risk scoring and OWASP vulnerability mapping.")
+    page_header("DREAD Scoring & OWASP Top 10", "Quantitative risk scoring and OWASP vulnerability mapping.")
 
     tab1, tab2, tab3 = st.tabs(["📊 DREAD Risk Calculator", "🛡️ OWASP Top 10", "🔗 STRIDE → OWASP Mapping"])
 

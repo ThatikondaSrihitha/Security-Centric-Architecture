@@ -8,7 +8,7 @@ from patterns.security_patterns import get_all_patterns
 
 def show() -> None:
     inject_css()
-    page_header("🗝️", "Security Pattern Library", "24 curated security design patterns with implementation guidance.")
+    page_header("Security Pattern Library", "24 curated security design patterns with implementation guidance.")
 
     all_patterns = get_all_patterns()
 

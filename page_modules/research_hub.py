@@ -154,7 +154,7 @@ RESOURCES = {
 
 def show() -> None:
     inject_css()
-    page_header("📚", "Research Hub",
+    page_header("Research Hub",
                 "NIST, OWASP, CIS, and IEEE resources with summaries for academic and professional reference.")
 
     total = sum(len(v) for v in RESOURCES.values())

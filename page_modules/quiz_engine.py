@@ -195,7 +195,7 @@ def _get_quiz_questions(category: str, difficulty: str, count: int) -> list:
 
 def show() -> None:
     inject_css()
-    page_header("🎓", "Security Architecture Quiz",
+    page_header("Security Architecture Quiz",
                 "Adaptive quizzes on STRIDE, DREAD, Architecture Patterns, OWASP, and Secure Coding.")
 
     # Stats

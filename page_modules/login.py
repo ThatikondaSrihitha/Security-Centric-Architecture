@@ -220,7 +220,7 @@ def show() -> None:
 
 def _show_profile() -> None:
     from page_modules.shared_styles import page_header, section_heading
-    page_header("👤", "My Profile", "Your account information and activity.")
+    page_header("My Profile", "Your account information and activity.")
 
     user = current_user()
     if not user:

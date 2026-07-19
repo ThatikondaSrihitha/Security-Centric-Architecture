@@ -10,11 +10,11 @@ from utils.session_manager import has_analysis, get as ss_get
 
 def show() -> None:
     inject_css()
-    page_header("💡", "Security Recommendations", "Prioritised, architecture-specific remediation recommendations.")
+    page_header("Security Recommendations", "Prioritised, architecture-specific remediation recommendations.")
 
     if not has_analysis():
         st.info("Run an architecture assessment first.")
-        if st.button("🚀 Run E-Commerce Demo"):
+        if st.button("Run E-Commerce Demo"):
             st.session_state["current_page"] = "New Architecture Assessment"
             st.session_state["trigger_demo"] = True
             st.rerun()
@@ -30,10 +30,10 @@ def show() -> None:
     counts  = Counter(r["priority"] for r in recs)
     m1, m2, m3, m4, m5 = st.columns(5)
     m1.metric("Total Recommendations", len(recs))
-    m2.metric("🔴 Immediate Actions",  counts.get("Critical", 0))
-    m3.metric("🟠 High Priority",      counts.get("High",     0))
-    m4.metric("🟡 Medium Priority",    counts.get("Medium",   0))
-    m5.metric("🟢 Best Practice",      counts.get("Low",      0))
+    m2.metric("Immediate Actions",  counts.get("Critical", 0))
+    m3.metric("High Priority",      counts.get("High",     0))
+    m4.metric("Medium Priority",    counts.get("Medium",   0))
+    m5.metric("Best Practice",      counts.get("Low",      0))
 
     # Filter
     f1, f2 = st.columns(2)

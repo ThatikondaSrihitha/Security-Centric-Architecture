@@ -5,7 +5,7 @@ from page_modules.shared_styles import inject_css, page_header, section_heading
 
 def show() -> None:
     inject_css()
-    page_header("📚", "Methodology", "How the Security-Centric Architecture Assessment Framework works.")
+    page_header("Methodology", "How the Security-Centric Architecture Assessment Framework works.")
 
     section_heading("Security by Design")
     st.markdown("""

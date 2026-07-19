@@ -5,7 +5,7 @@ from page_modules.shared_styles import inject_css, page_header, section_heading
 
 def show() -> None:
     inject_css()
-    page_header("📖", "Project Documentation", "Complete academic documentation for the B.Tech Major Project.")
+    page_header("Project Documentation", "Complete academic documentation for the B.Tech Major Project.")
 
     sections = {
         "Abstract": """

@@ -284,7 +284,7 @@ SSL termination, logging, threat detection""",
 
 def show() -> None:
     inject_css()
-    page_header("🏛️", "Architecture Pattern Library",
+    page_header("Architecture Pattern Library",
                 "12 detailed security-centric architectural patterns with threat models and diagrams.")
 
     # Stats row

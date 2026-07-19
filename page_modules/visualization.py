@@ -19,12 +19,12 @@ _TEXT = "#e5e7eb"
 
 def show() -> None:
     inject_css()
-    page_header("🗺️", "Architecture Visualization",
+    page_header("Architecture Visualization",
                 "Interactive multi-view visualization of your architecture's structure and security posture.")
 
     if not st.session_state.get("analysis_result"):
         st.info("Run an architecture assessment first to see the visualization.")
-        if st.button("🚀 Run E-Commerce Demo", use_container_width=True):
+        if st.button("Run E-Commerce Demo", use_container_width=True):
             st.session_state["current_page"] = "New Architecture Assessment"
             st.session_state["trigger_demo"] = True
             st.rerun()

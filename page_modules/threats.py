@@ -29,11 +29,11 @@ _STRIDE_DESC = {
 
 def show() -> None:
     inject_css()
-    page_header("🎯", "STRIDE Threat Analysis", "Rule-based detection of security threats across all 6 STRIDE categories.")
+    page_header("STRIDE Threat Analysis", "Rule-based detection of security threats across all 6 STRIDE categories.")
 
     if not has_analysis():
         st.info("Run an architecture assessment first.")
-        if st.button("🚀 Run E-Commerce Demo"):
+        if st.button("Run E-Commerce Demo"):
             st.session_state["current_page"] = "New Architecture Assessment"
             st.session_state["trigger_demo"] = True
             st.rerun()
@@ -47,10 +47,10 @@ def show() -> None:
     col_total, col_c, col_h, col_m, col_l = st.columns(5)
     counts = Counter(t.severity for t in threats)
     col_total.metric("Total Threats",   len(threats))
-    col_c.metric("🔴 Critical", counts.get("Critical", 0))
-    col_h.metric("🟠 High",     counts.get("High",     0))
-    col_m.metric("🟡 Medium",   counts.get("Medium",   0))
-    col_l.metric("🟢 Low",      counts.get("Low",      0))
+    col_c.metric("Critical", counts.get("Critical", 0))
+    col_h.metric("High",     counts.get("High",     0))
+    col_m.metric("Medium",   counts.get("Medium",   0))
+    col_l.metric("Low",      counts.get("Low",      0))
 
     # ── STRIDE category cards ─────────────────────────────────────────────
     section_heading("STRIDE Category Overview")

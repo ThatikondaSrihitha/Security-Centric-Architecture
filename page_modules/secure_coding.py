@@ -378,7 +378,7 @@ def login(username: str, password: str) -> bool:
 
 def show() -> None:
     inject_css()
-    page_header("💻", "Secure Coding Examples",
+    page_header("Secure Coding Examples",
                 "Side-by-side vulnerable vs. fixed code with attack explanations.")
 
     # Stats

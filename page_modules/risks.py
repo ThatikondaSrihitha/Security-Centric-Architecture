@@ -10,11 +10,11 @@ from visualization.dashboard_charts import risk_gauge, risk_matrix, component_ri
 
 def show() -> None:
     inject_css()
-    page_header("📈", "Risk Assessment", "Detailed risk scores, classification, and component-level risk analysis.")
+    page_header("Risk Assessment", "Detailed risk scores, classification, and component-level risk analysis.")
 
     if not has_analysis():
         st.info("Run an architecture assessment first.")
-        if st.button("🚀 Run E-Commerce Demo"):
+        if st.button("Run E-Commerce Demo"):
             st.session_state["current_page"] = "New Architecture Assessment"
             st.session_state["trigger_demo"] = True
             st.rerun()
@@ -64,10 +64,10 @@ def show() -> None:
         m3.metric("Max Risk Score",  rs.get("max_risk_score",  0))
         m4.metric("Risk Percentage", f"{rs.get('overall_risk_pct',0):.1f}%")
         m5, m6, m7, m8 = st.columns(4)
-        m5.metric("🔴 Critical", rs.get("critical_count", 0))
-        m6.metric("🟠 High",     rs.get("high_count",     0))
-        m7.metric("🟡 Medium",   rs.get("medium_count",   0))
-        m8.metric("🟢 Low",      rs.get("low_count",      0))
+        m5.metric("Critical", rs.get("critical_count", 0))
+        m6.metric("High",     rs.get("high_count",     0))
+        m7.metric("Medium",   rs.get("medium_count",   0))
+        m8.metric("Low",      rs.get("low_count",      0))
 
     # ── Charts ────────────────────────────────────────────────────────────
     ch1, ch2 = st.columns(2)

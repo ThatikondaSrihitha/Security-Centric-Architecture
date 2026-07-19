@@ -12,13 +12,13 @@ from utils.session_manager import set as ss_set
 def show() -> None:
     inject_css()
     init_db()
-    page_header("🕐", "Analysis History", "View, reload, compare, and manage previous security assessments.")
+    page_header("Analysis History", "View, reload, compare, and manage previous security assessments.")
 
     analyses = list_analyses()
 
     if not analyses:
         st.info("No analyses saved yet. Run an assessment to populate history.")
-        if st.button("🚀 Run E-Commerce Demo"):
+        if st.button("Run E-Commerce Demo"):
             st.session_state["current_page"] = "New Architecture Assessment"
             st.session_state["trigger_demo"] = True
             st.rerun()
@@ -61,10 +61,10 @@ def show() -> None:
             unsafe_allow_html=True,
         )
 
-        if col2.button("📂 Load", key=f"load_{a['id']}"):
+        if col2.button("Load", key=f"load_{a['id']}"):
             _reload_analysis(a["id"])
 
-        if col3.button("⬇️ JSON", key=f"dl_{a['id']}"):
+        if col3.button("JSON", key=f"dl_{a['id']}"):
             data = load_analysis(a["id"])
             if data:
                 json_str = json.dumps(data, indent=2)
@@ -76,36 +76,36 @@ def show() -> None:
                     key=f"dl_btn_{a['id']}",
                 )
 
-        if col4.button("🗑️ Delete", key=f"del_{a['id']}"):
+        if col4.button("Delete", key=f"del_{a['id']}"):
             st.session_state[f"confirm_del_{a['id']}"] = True
 
         # Confirmation dialog
         if st.session_state.get(f"confirm_del_{a['id']}"):
             st.warning(f"⚠️ Delete analysis for **{a['arch_name']}**? This cannot be undone.")
             yes_col, no_col = st.columns(2)
-            if yes_col.button("✅ Yes, Delete", key=f"yes_del_{a['id']}"):
+            if yes_col.button("Yes, Delete", key=f"yes_del_{a['id']}"):
                 delete_analysis(a["id"])
                 st.session_state[f"confirm_del_{a['id']}"] = False
                 st.success("Deleted.")
                 st.rerun()
-            if no_col.button("❌ Cancel", key=f"no_del_{a['id']}"):
+            if no_col.button("Cancel", key=f"no_del_{a['id']}"):
                 st.session_state[f"confirm_del_{a['id']}"] = False
                 st.rerun()
 
     st.markdown("---")
-    if st.button("🗑️ Clear All History", type="secondary"):
+    if st.button("Clear All History", type="secondary"):
         st.session_state["confirm_clear_all"] = True
 
     if st.session_state.get("confirm_clear_all"):
         st.warning("⚠️ This will permanently delete ALL analysis history.")
         c1, c2 = st.columns(2)
-        if c1.button("✅ Yes, clear all"):
+        if c1.button("Yes, clear all"):
             for a in analyses:
                 delete_analysis(a["id"])
             st.session_state["confirm_clear_all"] = False
             st.success("All history cleared.")
             st.rerun()
-        if c2.button("❌ Cancel"):
+        if c2.button("Cancel"):
             st.session_state["confirm_clear_all"] = False
             st.rerun()
 

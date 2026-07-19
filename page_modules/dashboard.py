@@ -13,7 +13,7 @@ from visualization.dashboard_charts import (
 
 def show() -> None:
     inject_css()
-    page_header("📊", "Security Dashboard", "Interactive overview of your architecture's security posture.")
+    page_header("Security Dashboard", "Interactive overview of your architecture's security posture.")
 
     if not has_analysis():
         _no_analysis()
@@ -71,10 +71,10 @@ def show() -> None:
     section_heading("Threat Summary")
     t1, t2, t3, t4, t5, t6 = st.columns(6)
     t1.metric("Total Threats",   rs.get("total_threats",  0))
-    t2.metric("🔴 Critical",     rs.get("critical_count", 0))
-    t3.metric("🟠 High",         rs.get("high_count",     0))
-    t4.metric("🟡 Medium",       rs.get("medium_count",   0))
-    t5.metric("🟢 Low",          rs.get("low_count",      0))
+    t2.metric("Critical",     rs.get("critical_count", 0))
+    t3.metric("High",         rs.get("high_count",     0))
+    t4.metric("Medium",       rs.get("medium_count",   0))
+    t5.metric("Low",          rs.get("low_count",      0))
     t6.metric("Avg Risk Score",  f"{rs.get('avg_risk_score', 0):.1f}/25")
 
     # Overall risk gauge
@@ -144,11 +144,11 @@ def _no_analysis() -> None:
     st.info("No analysis results found. Run an assessment first.")
     c1, c2 = st.columns(2)
     with c1:
-        if st.button("🚀 Run E-Commerce Demo", type="primary"):
+        if st.button("Run E-Commerce Demo", type="primary"):
             st.session_state["current_page"]  = "New Architecture Assessment"
             st.session_state["trigger_demo"]  = True
             st.rerun()
     with c2:
-        if st.button("📁 Upload Architecture"):
+        if st.button("Upload Architecture"):
             st.session_state["current_page"] = "New Architecture Assessment"
             st.rerun()
