@@ -1,4 +1,4 @@
-# 🔐 Security-Centric Architecture Assessment Framework
+# Security-Centric Architecture Assessment Framework
 
 > **Analyze, Assess, and Secure Software Architecture Before Coding Begins.**
 
@@ -8,7 +8,7 @@ STRIDE threat modeling, risk assessment, security pattern mapping, and professio
 
 ---
 
-## 🎯 Project Overview
+## Project Overview
 
 Traditional software security tools (OWASP ZAP, Burp Suite, SonarQube) require running code or 
 deployed applications. This framework analyzes **architecture descriptions** at the design stage, 
@@ -25,7 +25,7 @@ identifying security vulnerabilities when they are cheapest to fix.
 
 ---
 
-## ✨ Features
+##  Features
 
 | Feature | Description |
 |---------|-------------|
@@ -42,7 +42,7 @@ identifying security vulnerabilities when they are cheapest to fix.
 
 ---
 
-## 📱 Application Pages
+##  Application Pages
 
 1. **Home** – Landing page with workflow overview
 2. **Security Dashboard** – 9 interactive charts and risk gauge
@@ -60,7 +60,7 @@ identifying security vulnerabilities when they are cheapest to fix.
 
 ---
 
-## 🛠️ Technology Stack
+##  Technology Stack
 
 | Technology | Version | Purpose |
 |-----------|---------|---------|
@@ -76,7 +76,7 @@ identifying security vulnerabilities when they are cheapest to fix.
 
 ---
 
-## 📁 Folder Structure
+##  Folder Structure
 
 ```
 security_architecture_framework/
@@ -164,7 +164,7 @@ security_architecture_framework/
 
 ---
 
-## 🚀 Installation & Running
+##  Installation & Running
 
 ### Windows
 
@@ -188,7 +188,7 @@ The application will open at: **http://localhost:8501**
 
 ---
 
-## 🧪 Running Tests
+##  Running Tests
 
 ```bash
 # Run all tests
@@ -201,7 +201,7 @@ pytest tests/test_integration.py -v
 
 ---
 
-## 📐 Risk Formula
+##  Risk Formula
 
 ```
 Risk Score = Likelihood (1–5) × Impact (1–5)
@@ -217,7 +217,7 @@ Overall Risk % = (Average Risk Score / 25) × 100
 
 ---
 
-## 🎯 STRIDE Categories
+##  STRIDE Categories
 
 | Letter | Category | Description |
 |--------|----------|-------------|
@@ -230,7 +230,7 @@ Overall Risk % = (Average Risk Score / 25) × 100
 
 ---
 
-## 📥 Sample Input Formats
+##  Sample Input Formats
 
 ### JSON
 ```json
@@ -279,7 +279,7 @@ No secrets or API keys required.
 
 ---
 
-## 📸 Screenshots
+##  Screenshots
 
 *(Add screenshots after deployment)*
 
@@ -293,7 +293,7 @@ No secrets or API keys required.
 
 ---
 
-## 🔮 Future Scope
+##  Future Scope
 
 - ML-enhanced threat detection from CVE databases
 - MITRE ATT&CK mapping
@@ -304,7 +304,7 @@ No secrets or API keys required.
 
 ---
 
-## ⚠️ Academic Disclaimer
+##  Academic Disclaimer
 
 This project is developed as a B.Tech Major Project for academic purposes. The security assessments 
 generated are based on architectural analysis and should be supplemented with professional security 
