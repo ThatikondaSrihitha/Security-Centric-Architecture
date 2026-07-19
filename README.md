@@ -266,7 +266,7 @@ WA -> DB : SQL query
 
 ---
 
-## 🌐 Deployment (Streamlit Community Cloud)
+##  Deployment (Streamlit Community Cloud)
 
 1. Push code to a **public GitHub repository**
 2. Go to [share.streamlit.io](https://share.streamlit.io)
