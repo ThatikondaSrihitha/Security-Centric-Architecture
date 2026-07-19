@@ -12,11 +12,6 @@ def show() -> None:
             border-radius:18px;padding:56px 48px 48px;text-align:center;
             margin-bottom:30px;border:1px solid rgba(0,212,255,0.1);
             box-shadow:0 20px 60px rgba(0,0,0,0.4);">
-  <div style="display:inline-block;background:rgba(0,212,255,0.07);
-              border:1px solid rgba(0,212,255,0.18);color:#00D4FF;
-              font-size:0.68rem;font-weight:700;letter-spacing:0.14em;
-              text-transform:uppercase;padding:4px 14px;border-radius:4px;
-              margin-bottom:18px;">B.Tech Major Project &mdash; Cybersecurity</div>
   <h1 style="color:#e2e8f0;font-size:2.5rem;font-weight:800;
              margin:0 0 14px 0;letter-spacing:-0.03em;line-height:1.15;">
     Security-Centric Architecture<br>
